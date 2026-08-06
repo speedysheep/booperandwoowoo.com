@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# wrangler
+.wrangler/
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
