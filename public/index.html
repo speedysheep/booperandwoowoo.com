@@ -3,41 +3,483 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>booperandwoowoo.com</title>
+    <title>Boopersnooter and Woowoo world</title>
     <style>
       :root {
         color-scheme: light dark;
         font-family: system-ui, sans-serif;
       }
 
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
         background: #0f172a;
         color: #f8fafc;
       }
 
-      main {
+      header {
         text-align: center;
-        padding: 2rem;
+        padding: 2.5rem 1rem 1.5rem;
       }
 
       h1 {
         font-size: clamp(2rem, 5vw, 3rem);
-        margin-bottom: 0.5rem;
+        margin: 0 0 0.5rem;
       }
 
-      p {
+      header p {
+        opacity: 0.7;
+      }
+
+      main {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem 3rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 8px;
+      }
+
+      .grid button {
+        all: unset;
+        cursor: zoom-in;
+        position: relative;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #1e293b;
+        display: block;
+      }
+
+      .grid img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.2s ease;
+      }
+
+      .grid button:hover img,
+      .grid button:focus-visible img {
+        transform: scale(1.05);
+      }
+
+      .grid button:focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 2px;
+      }
+
+      .grid video.preview {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+      }
+
+      .grid button.video-hovering video.preview {
+        opacity: 1;
+      }
+
+      .grid button.video-hovering img {
+        opacity: 0;
+      }
+
+      .play-badge {
+        position: absolute;
+        bottom: 6px;
+        right: 6px;
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: rgba(2, 6, 23, 0.65);
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+      }
+
+      .play-badge::after {
+        content: "";
+        border-style: solid;
+        border-width: 6px 0 6px 10px;
+        border-color: transparent transparent transparent #f8fafc;
+        margin-left: 2px;
+      }
+
+      .empty {
+        text-align: center;
+        opacity: 0.7;
+        padding: 3rem 1rem;
+      }
+
+      /* Lightbox */
+      dialog#lightbox {
+        border: none;
+        padding: 0;
+        margin: auto;
+        max-width: 100vw;
+        max-height: 100vh;
+        width: 100%;
+        height: 100%;
+        background: rgba(2, 6, 23, 0.96);
+        color: #f8fafc;
+      }
+
+      dialog#lightbox::backdrop {
+        background: rgba(2, 6, 23, 0.96);
+      }
+
+      .lightbox-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .lightbox-inner img,
+      .lightbox-inner video {
+        max-width: 92vw;
+        max-height: 88vh;
+        object-fit: contain;
+        border-radius: 4px;
+      }
+
+      .lightbox-inner button {
+        all: unset;
+        cursor: pointer;
+        position: absolute;
+        color: #f8fafc;
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 999px;
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+        line-height: 1;
+        user-select: none;
+      }
+
+      .lightbox-inner button:hover,
+      .lightbox-inner button:focus-visible {
+        background: rgba(56, 189, 248, 0.35);
+      }
+
+      #closeBtn {
+        top: 16px;
+        right: 16px;
+      }
+
+      #prevBtn {
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      #nextBtn {
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      #counter {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.85rem;
         opacity: 0.8;
+        background: rgba(15, 23, 42, 0.6);
+        padding: 4px 12px;
+        border-radius: 999px;
+      }
+
+      @media (max-width: 640px) {
+        .lightbox-inner button {
+          width: 38px;
+          height: 38px;
+          font-size: 1.2rem;
+        }
       }
     </style>
   </head>
   <body>
+    <header>
+      <h1>Boopersnooter and Woowoo world</h1>
+      <p id="subtitle">Loading gallery&hellip;</p>
+      <p id="love">We love you puppies, you're the best</p
+    </header>
     <main>
-      <h1>booperandwoowoo.com</h1>
-      <p>Site coming soon.</p>
+      <div class="grid" id="grid"></div>
     </main>
+
+    <dialog id="lightbox">
+      <div class="lightbox-inner">
+        <button id="closeBtn" aria-label="Close">&times;</button>
+        <button id="prevBtn" aria-label="Previous photo">&#8249;</button>
+        <img id="lightboxImg" src="" alt="" />
+        <video id="lightboxVideo" controls playsinline style="display: none"></video>
+        <button id="nextBtn" aria-label="Next photo">&#8250;</button>
+        <span id="counter"></span>
+      </div>
+    </dialog>
+
+    <script>
+      const grid = document.getElementById("grid");
+      const subtitle = document.getElementById("subtitle");
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightboxImg");
+      const lightboxVideo = document.getElementById("lightboxVideo");
+      const counter = document.getElementById("counter");
+      let items = [];
+      let current = 0;
+      // Maps the id in the URL hash back to a gallery index, so a pasted link
+      // opens straight onto that photo/video.
+      const idToIndex = new Map();
+      // True when opening the lightbox pushed a history entry we own, so closing
+      // it can just go back. False when we landed directly on a shared link and
+      // there's nothing of ours behind us.
+      let pushedEntry = false;
+      // Set while we're closing in response to back/forward, so the close handler
+      // doesn't try to touch history again.
+      let closingFromHistory = false;
+
+      // Stable per-item id: the thumbnail/poster basename. They all live in one
+      // directory so they're already unique, and unlike a positional index they
+      // don't shift when new photos are added — old links keep working.
+      function idFor(item) {
+        const file = (item.type === "video" ? item.poster : item.thumb) || item.full;
+        return file.split("/").pop().replace(/\.[^.]+$/, "");
+      }
+
+      function hashId() {
+        return decodeURIComponent(location.hash.replace(/^#/, ""));
+      }
+
+      function urlFor(index) {
+        return `${location.pathname}${location.search}#${encodeURIComponent(idFor(items[index]))}`;
+      }
+
+      function openLightbox(index) {
+        current = index;
+        showCurrent();
+        if (!lightbox.open) {
+          history.pushState({ lightbox: true }, "", urlFor(index));
+          pushedEntry = true;
+          lightbox.showModal();
+        } else {
+          history.replaceState({ lightbox: true }, "", urlFor(index));
+        }
+      }
+
+      function showCurrent() {
+        const p = items[current];
+        if (p.type === "video") {
+          lightboxVideo.src = p.full;
+          lightboxVideo.poster = p.poster;
+          lightboxImg.style.display = "none";
+          lightboxVideo.style.display = "block";
+          lightboxVideo.play().catch(() => {});
+        } else {
+          lightboxVideo.pause();
+          lightboxVideo.removeAttribute("src");
+          lightboxVideo.load();
+          lightboxVideo.style.display = "none";
+          lightboxImg.style.display = "block";
+          lightboxImg.src = p.full;
+          lightboxImg.alt = p.full;
+        }
+        counter.textContent = `${current + 1} / ${items.length}`;
+      }
+
+      function step(delta) {
+        current = (current + delta + items.length) % items.length;
+        showCurrent();
+        // Replace rather than push: arrowing through 300 photos shouldn't bury
+        // the Back button under 300 history entries.
+        history.replaceState({ lightbox: true }, "", urlFor(current));
+      }
+
+      function closeLightbox() {
+        lightbox.close();
+      }
+
+      // All teardown lives here so the native Escape-closes-a-<dialog> path gets
+      // the same cleanup as our own close button.
+      lightbox.addEventListener("close", () => {
+        lightboxVideo.pause();
+        if (closingFromHistory) {
+          closingFromHistory = false;
+          return;
+        }
+        if (pushedEntry) {
+          pushedEntry = false;
+          history.back();
+        } else if (location.hash) {
+          history.replaceState(null, "", location.pathname + location.search);
+        }
+      });
+
+      // Back/forward, and pasting a different link into the address bar of an
+      // already-open tab (that fires hashchange, not a reload).
+      function syncFromUrl() {
+        const index = idToIndex.get(hashId());
+        if (index !== undefined) {
+          current = index;
+          showCurrent();
+          if (!lightbox.open) lightbox.showModal();
+          return;
+        }
+        pushedEntry = false;
+        if (lightbox.open) {
+          closingFromHistory = true;
+          lightbox.close();
+        }
+      }
+
+      window.addEventListener("popstate", syncFromUrl);
+      window.addEventListener("hashchange", syncFromUrl);
+
+      document.getElementById("closeBtn").addEventListener("click", closeLightbox);
+      document.getElementById("prevBtn").addEventListener("click", () => step(-1));
+      document.getElementById("nextBtn").addEventListener("click", () => step(1));
+
+      lightbox.addEventListener("click", (e) => {
+        // Click on the backdrop (the dialog element itself, not its content) closes it.
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (!lightbox.open) return;
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowLeft") step(-1);
+        if (e.key === "ArrowRight") step(1);
+      });
+
+      function buildPhotoTile(p, btn) {
+        const img = document.createElement("img");
+        img.src = p.thumb;
+        img.alt = "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        btn.appendChild(img);
+      }
+      
+      function shuffle(array) {
+        let currentIndex = array.length;
+
+        // While there remain elements to shuffle...
+        while (currentIndex != 0) {
+
+          // Pick a remaining element...
+          let randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+      }
+
+      function buildVideoTile(p, btn) {
+        const img = document.createElement("img");
+        img.src = p.poster;
+        img.alt = "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        btn.appendChild(img);
+
+        const badge = document.createElement("span");
+        badge.className = "play-badge";
+        btn.appendChild(badge);
+
+        // The hover-preview <video> is only created on first hover, so a page with
+        // many videos doesn't kick off dozens of network requests on load.
+        let video = null;
+        let leaveTimer = null;
+
+        btn.addEventListener("mouseenter", () => {
+          clearTimeout(leaveTimer);
+          if (!video) {
+            video = document.createElement("video");
+            video.className = "preview";
+            video.src = p.preview;
+            video.muted = true;
+            video.loop = true;
+            video.playsInline = true;
+            btn.appendChild(video);
+          }
+          btn.classList.add("video-hovering");
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        });
+
+        btn.addEventListener("mouseleave", () => {
+          btn.classList.remove("video-hovering");
+          // Give the fade-out transition a moment before pausing.
+          leaveTimer = setTimeout(() => video && video.pause(), 150);
+        });
+      }
+
+      fetch("gallery.json")
+        .then((r) => r.json())
+        .then((data) => {
+          items = data;
+          shuffle(items);          
+          idToIndex.clear();
+          items.forEach((p, i) => idToIndex.set(idFor(p), i));
+          if (items.length === 0) {
+            subtitle.textContent = "Nothing here yet.";
+            grid.innerHTML = '<p class="empty">Check back soon.</p>';
+            return;
+          }
+          const photoCount = items.filter((p) => p.type !== "video").length;
+          const videoCount = items.length - photoCount;
+          const parts = [];
+          if (photoCount) parts.push(`${photoCount} photo${photoCount === 1 ? "" : "s"}`);
+          if (videoCount) parts.push(`${videoCount} video${videoCount === 1 ? "" : "s"}`);
+          subtitle.textContent = parts.join(", ") + ", 2 best dogs ever";
+          grid.innerHTML = "";
+          items.forEach((p, i) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.setAttribute("aria-label", `Open ${p.type === "video" ? "video" : "photo"} ${i + 1}`);
+            btn.addEventListener("click", () => openLightbox(i));
+
+            if (p.type === "video") {
+              buildVideoTile(p, btn);
+            } else {
+              buildPhotoTile(p, btn);
+            }
+
+            grid.appendChild(btn);
+          });
+
+          // Arrived on a shared link: open that item immediately. No pushState —
+          // there's no page-of-ours behind us to go back to, so closing strips
+          // the hash instead.
+          const deepLink = idToIndex.get(hashId());
+          if (deepLink !== undefined) {
+            current = deepLink;
+            showCurrent();
+            lightbox.showModal();
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          subtitle.textContent = "Couldn't load the gallery.";
+        });
+    </script>
   </body>
 </html>

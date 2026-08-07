@@ -11,3 +11,11 @@ node_modules/
 # Logs
 *.log
 npm-debug.log*
+
+# Raw video sources (drop files here; scripts/process-videos.mjs uploads them to R2,
+# it never commits them). Poster thumbnails still land in public/thumbs/ and ARE committed.
+public/videos/
+
+# Video processing cache/staging (see scripts/process-videos.mjs)
+.media-cache.json
+.video-staging/
