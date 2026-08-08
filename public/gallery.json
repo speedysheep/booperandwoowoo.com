@@ -2144,6 +2144,15 @@
   },
   {
     "type": "video",
+    "poster": "thumbs/PXL_20230901_021049676.LS.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/a1bd61420fa5e3059f045bc95fde0e1919607da9.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/a1bd61420fa5e3059f045bc95fde0e1919607da9.mp4",
+    "width": 1280,
+    "height": 960,
+    "duration": 16.0986
+  },
+  {
+    "type": "video",
     "poster": "thumbs/PXL_20230909_000717907.LS.jpg",
     "preview": "https://media.booperandwoowoo.com/previews/a4670c249f47180c5f2906b4183518a10808a41d.mp4",
     "full": "https://media.booperandwoowoo.com/videos/a4670c249f47180c5f2906b4183518a10808a41d.mp4",
