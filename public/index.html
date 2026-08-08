@@ -35,6 +35,112 @@
         opacity: 0.7;
       }
 
+      /* The subtitle stays optically centred in the header while the controls
+         sit hard left, so the row is relative + absolutely-placed controls
+         rather than a flex row (which would push the subtitle off-centre). */
+      .subtitle-row {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Tall enough for the 30px buttons, so they don't hang out of the row
+           into the heading's margin. */
+        min-height: 34px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .subtitle-row p {
+        margin: 0;
+      }
+
+      .controls {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        gap: 6px;
+        /* #subtitle is opacity < 1, which gives it its own stacking context
+           painted at z-index 0 — later in DOM order, so without this it covers
+           the buttons and swallows their clicks. */
+        z-index: 1;
+      }
+
+      .controls button {
+        all: unset;
+        cursor: pointer;
+        position: relative;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        color: #f8fafc;
+        opacity: 0.45;
+        background: rgba(248, 250, 252, 0.06);
+        transition: opacity 0.15s ease, background 0.15s ease;
+      }
+
+      /* Hover/focus hint. Native title= works but waits about a second and
+         can't be seen from the keyboard; this shows straight away. */
+      .controls button::after {
+        content: attr(data-tip);
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        z-index: 2;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        line-height: 1;
+        padding: 6px 9px;
+        border-radius: 6px;
+        background: #1e293b;
+        color: #f8fafc;
+        box-shadow: 0 4px 12px rgba(2, 6, 23, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.12s ease;
+      }
+
+      .controls button:hover::after,
+      .controls button:focus-visible::after {
+        opacity: 1;
+      }
+
+      .controls button:hover {
+        opacity: 0.8;
+      }
+
+      .controls button:focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 2px;
+      }
+
+      .controls button.on {
+        opacity: 1;
+        background: rgba(56, 189, 248, 0.3);
+      }
+
+      .controls svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      @media (max-width: 640px) {
+        /* No room to overlap on a phone — let the controls take their own line. */
+        .subtitle-row {
+          display: block;
+        }
+
+        .controls {
+          position: static;
+          transform: none;
+          margin: 0 0 0.75rem;
+        }
+      }
+
       main {
         max-width: 1400px;
         margin: 0 auto;
@@ -122,6 +228,44 @@
         padding: 3rem 1rem;
       }
 
+      .pager {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 2rem 1rem 0.5rem;
+      }
+
+      .pager[hidden] {
+        display: none;
+      }
+
+      .pager button {
+        all: unset;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        background: rgba(248, 250, 252, 0.08);
+        color: #f8fafc;
+        font-size: 0.9rem;
+        transition: background 0.15s ease;
+      }
+
+      .pager button:hover {
+        background: rgba(56, 189, 248, 0.3);
+      }
+
+      .pager button:focus-visible {
+        outline: 2px solid #38bdf8;
+        outline-offset: 2px;
+      }
+
+      .pager button:disabled {
+        cursor: default;
+        opacity: 0.3;
+        background: rgba(248, 250, 252, 0.08);
+      }
+
       /* Lightbox */
       dialog#lightbox {
         border: none;
@@ -177,6 +321,13 @@
         background: rgba(56, 189, 248, 0.35);
       }
 
+      /* Used for the prev/next arrows at the very start and end of the gallery.
+         visibility (not display) so the arrow that remains doesn't shift. */
+      .lightbox-inner button.is-hidden {
+        visibility: hidden;
+        pointer-events: none;
+      }
+
       #closeBtn {
         top: 16px;
         right: 16px;
@@ -218,11 +369,30 @@
   <body>
     <header>
       <h1>Boopersnooter and Woowoo world</h1>
-      <p id="subtitle">Loading gallery&hellip;</p>
-      <p id="love">We love you puppies, you're the best</p
+      <div class="subtitle-row">
+        <div class="controls">
+          <button id="shuffleBtn" type="button" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 3h5v5" /><path d="M4 20 21 3" />
+              <path d="M21 16v5h-5" /><path d="m15 15 6 6" /><path d="m4 4 5 5" />
+            </svg>
+          </button>
+          <button id="filterBtn" type="button">
+            <svg id="filterIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+          </button>
+        </div>
+        <p id="subtitle">Loading gallery&hellip;</p>
+      </div>
+      <p id="love">We love you puppies, you're the best</p>
     </header>
     <main>
       <div class="grid" id="grid"></div>
+      <nav class="pager" id="pager" hidden>
+        <button id="pagePrev" type="button">&#8249; Previous</button>
+        <button id="pageNext" type="button">Next &#8250;</button>
+      </nav>
     </main>
 
     <dialog id="lightbox">
@@ -243,8 +413,31 @@
       const lightboxImg = document.getElementById("lightboxImg");
       const lightboxVideo = document.getElementById("lightboxVideo");
       const counter = document.getElementById("counter");
+      const shuffleBtn = document.getElementById("shuffleBtn");
+      const filterBtn = document.getElementById("filterBtn");
+      const filterIcon = document.getElementById("filterIcon");
+      const pager = document.getElementById("pager");
+      const pagePrev = document.getElementById("pagePrev");
+      const pageNext = document.getElementById("pageNext");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const PAGE_SIZE = 86;
+      // Everything gallery.json gave us, in its own order.
+      let allItems = [];
+      // The same items in a random order, regenerated whenever randomisation is
+      // switched on — so changing the photo/video filter doesn't reshuffle.
+      let shuffledItems = [];
+      // What's actually on screen: the chosen order, then the chosen filter.
       let items = [];
+      // `current` indexes the whole filtered gallery, not the visible page — the
+      // lightbox walks straight across page boundaries.
       let current = 0;
+      // Which page of thumbnails the grid is showing (0-based).
+      let page = 0;
+      let randomize = true;
+      // Index into FILTERS below. Neither this nor `randomize` is persisted —
+      // a reload puts both back to "random, everything".
+      let filterIndex = 0;
       // Maps the id in the URL hash back to a gallery index, so a pasted link
       // opens straight onto that photo/video.
       const idToIndex = new Map();
@@ -302,14 +495,30 @@
           lightboxImg.alt = p.full;
         }
         counter.textContent = `${current + 1} / ${items.length}`;
+        // No wrap-around: the ends of the gallery are dead ends.
+        prevBtn.classList.toggle("is-hidden", current === 0);
+        nextBtn.classList.toggle("is-hidden", current === items.length - 1);
       }
 
       function step(delta) {
-        current = (current + delta + items.length) % items.length;
+        const next = current + delta;
+        if (next < 0 || next >= items.length) return;
+        current = next;
         showCurrent();
+        // Keep the grid underneath in step, so escaping out of the lightbox
+        // leaves you on the page holding the photo you were just looking at.
+        showPageFor(current);
         // Replace rather than push: arrowing through 300 photos shouldn't bury
         // the Back button under 300 history entries.
         history.replaceState({ lightbox: true }, "", urlFor(current));
+      }
+
+      // Switch the grid to the page containing a given gallery index.
+      function showPageFor(index) {
+        const wanted = Math.floor(index / PAGE_SIZE);
+        if (wanted === page) return;
+        page = wanted;
+        renderGrid();
       }
 
       function closeLightbox() {
@@ -318,8 +527,17 @@
 
       // All teardown lives here so the native Escape-closes-a-<dialog> path gets
       // the same cleanup as our own close button.
+      // On the way out of the lightbox, bring the thumbnail you were just
+      // looking at into view — after paging around, wherever the grid happens
+      // to be scrolled is rarely where that photo is.
+      function scrollCurrentIntoView() {
+        const tile = grid.children[current - page * PAGE_SIZE];
+        if (tile) tile.scrollIntoView({ block: "center" });
+      }
+
       lightbox.addEventListener("close", () => {
         lightboxVideo.pause();
+        scrollCurrentIntoView();
         if (closingFromHistory) {
           closingFromHistory = false;
           return;
@@ -339,6 +557,7 @@
         if (index !== undefined) {
           current = index;
           showCurrent();
+          showPageFor(current);
           if (!lightbox.open) lightbox.showModal();
           return;
         }
@@ -353,8 +572,8 @@
       window.addEventListener("hashchange", syncFromUrl);
 
       document.getElementById("closeBtn").addEventListener("click", closeLightbox);
-      document.getElementById("prevBtn").addEventListener("click", () => step(-1));
-      document.getElementById("nextBtn").addEventListener("click", () => step(1));
+      prevBtn.addEventListener("click", () => step(-1));
+      nextBtn.addEventListener("click", () => step(1));
 
       lightbox.addEventListener("click", (e) => {
         // Click on the backdrop (the dialog element itself, not its content) closes it.
@@ -377,8 +596,11 @@
         btn.appendChild(img);
       }
       
+      // Returns a shuffled copy, so the gallery's own order stays available for
+      // when randomisation is switched back off.
       function shuffle(array) {
-        let currentIndex = array.length;
+        const out = array.slice();
+        let currentIndex = out.length;
 
         // While there remain elements to shuffle...
         while (currentIndex != 0) {
@@ -388,8 +610,9 @@
           currentIndex--;
 
           // And swap it with the current element.
-          [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+          [out[currentIndex], out[randomIndex]] = [out[randomIndex], out[currentIndex]];
         }
+        return out;
       }
 
       function buildVideoTile(p, btn) {
@@ -432,39 +655,158 @@
         });
       }
 
+      // Icons are inline so the page stays a single file with no extra requests.
+      const FILTERS = [
+        {
+          label: "Showing photos and videos",
+          tip: "Showing photos and videos — click for photos only",
+          keep: () => true,
+          icon: `<path d="M18 22H4a2 2 0 0 1-2-2V6" /><rect x="6" y="2" width="16" height="16" rx="2" />
+                 <circle cx="11" cy="8" r="1.6" /><path d="m22 12-3.3-3.3a2 2 0 0 0-2.8 0L10 15" />`,
+        },
+        {
+          label: "Showing photos only",
+          tip: "Showing photos only — click for videos only",
+          keep: (p) => p.type !== "video",
+          icon: `<rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="9" cy="9" r="1.8" />
+                 <path d="m21 15-4.6-4.6a2 2 0 0 0-2.8 0L3.5 20.5" />`,
+        },
+        {
+          label: "Showing videos only",
+          tip: "Showing videos only — click to show both",
+          keep: (p) => p.type === "video",
+          icon: `<path d="m22 8-6 4 6 4V8Z" /><rect x="2" y="6" width="14" height="12" rx="2" />`,
+        },
+      ];
+
+      // aria-label states what the control currently is; data-tip (the hover
+      // bubble) also says what clicking will do next.
+      function syncControls() {
+        shuffleBtn.classList.toggle("on", randomize);
+        shuffleBtn.setAttribute("aria-pressed", String(randomize));
+        shuffleBtn.setAttribute("aria-label", randomize ? "Random order (on)" : "Random order (off)");
+        shuffleBtn.dataset.tip = randomize
+          ? "Random order — click for gallery order"
+          : "Gallery order — click to shuffle";
+
+        const filter = FILTERS[filterIndex];
+        filterIcon.innerHTML = filter.icon;
+        filterBtn.classList.toggle("on", filterIndex !== 0);
+        filterBtn.setAttribute("aria-label", filter.label);
+        filterBtn.dataset.tip = filter.tip;
+      }
+
+      function pageCount() {
+        return Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+      }
+
+      // Draws one page of thumbnails plus the pager beneath it. Never touches
+      // the lightbox — `current` is a gallery-wide index and is independent of
+      // which page happens to be on screen.
+      function renderGrid() {
+        const start = page * PAGE_SIZE;
+        const shown = items.slice(start, start + PAGE_SIZE);
+
+        grid.innerHTML = "";
+        shown.forEach((p, i) => {
+          const index = start + i;
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.setAttribute("aria-label", `Open ${p.type === "video" ? "video" : "photo"} ${index + 1}`);
+          btn.addEventListener("click", () => openLightbox(index));
+
+          if (p.type === "video") {
+            buildVideoTile(p, btn);
+          } else {
+            buildPhotoTile(p, btn);
+          }
+
+          grid.appendChild(btn);
+        });
+
+        const pages = pageCount();
+        pager.hidden = pages < 2;
+        pagePrev.disabled = page === 0;
+        pageNext.disabled = page >= pages - 1;
+      }
+
+      function goToPage(next) {
+        const clamped = Math.min(Math.max(next, 0), pageCount() - 1);
+        if (clamped === page) return;
+        page = clamped;
+        renderGrid();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function render() {
+        // Hold onto whatever the lightbox is showing so a reorder or a filter
+        // change doesn't yank it out from under the viewer.
+        const openId = lightbox.open && items.length ? idFor(items[current]) : null;
+
+        const base = randomize ? shuffledItems : allItems;
+        items = base.filter(FILTERS[filterIndex].keep);
+        idToIndex.clear();
+        items.forEach((p, i) => idToIndex.set(idFor(p), i));
+
+        syncControls();
+
+        if (items.length === 0) {
+          subtitle.textContent = allItems.length ? "Nothing matches that filter." : "Nothing here yet.";
+          grid.innerHTML = '<p class="empty">Check back soon.</p>';
+          pager.hidden = true;
+          if (lightbox.open) closeLightbox();
+          return;
+        }
+
+        const photoCount = items.filter((p) => p.type !== "video").length;
+        const videoCount = items.length - photoCount;
+        const parts = [];
+        if (photoCount) parts.push(`${photoCount} photo${photoCount === 1 ? "" : "s"}`);
+        if (videoCount) parts.push(`${videoCount} video${videoCount === 1 ? "" : "s"}`);
+        subtitle.textContent = parts.join(", ") + ", 2 best dogs ever";
+
+        // A reorder or filter change reshuffles what lives on which page, so
+        // start from the top unless the lightbox anchors us somewhere.
+        const stillShown = openId === null ? undefined : idToIndex.get(openId);
+        current = stillShown === undefined ? 0 : stillShown;
+        page = Math.floor(current / PAGE_SIZE);
+        renderGrid();
+
+        if (openId !== null) {
+          if (stillShown === undefined) {
+            // Filtered away — close rather than jump to some unrelated item.
+            closeLightbox();
+          } else {
+            showCurrent();
+            history.replaceState({ lightbox: true }, "", urlFor(current));
+          }
+        }
+      }
+
+      shuffleBtn.addEventListener("click", () => {
+        randomize = !randomize;
+        // Deal a fresh order each time it's turned on.
+        if (randomize) shuffledItems = shuffle(allItems);
+        render();
+      });
+
+      filterBtn.addEventListener("click", () => {
+        filterIndex = (filterIndex + 1) % FILTERS.length;
+        render();
+      });
+
+      pagePrev.addEventListener("click", () => goToPage(page - 1));
+      pageNext.addEventListener("click", () => goToPage(page + 1));
+
+      // Draw the icons before the gallery lands (and if it never does).
+      syncControls();
+
       fetch("gallery.json")
         .then((r) => r.json())
         .then((data) => {
-          items = data;
-          shuffle(items);          
-          idToIndex.clear();
-          items.forEach((p, i) => idToIndex.set(idFor(p), i));
-          if (items.length === 0) {
-            subtitle.textContent = "Nothing here yet.";
-            grid.innerHTML = '<p class="empty">Check back soon.</p>';
-            return;
-          }
-          const photoCount = items.filter((p) => p.type !== "video").length;
-          const videoCount = items.length - photoCount;
-          const parts = [];
-          if (photoCount) parts.push(`${photoCount} photo${photoCount === 1 ? "" : "s"}`);
-          if (videoCount) parts.push(`${videoCount} video${videoCount === 1 ? "" : "s"}`);
-          subtitle.textContent = parts.join(", ") + ", 2 best dogs ever";
-          grid.innerHTML = "";
-          items.forEach((p, i) => {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.setAttribute("aria-label", `Open ${p.type === "video" ? "video" : "photo"} ${i + 1}`);
-            btn.addEventListener("click", () => openLightbox(i));
-
-            if (p.type === "video") {
-              buildVideoTile(p, btn);
-            } else {
-              buildPhotoTile(p, btn);
-            }
-
-            grid.appendChild(btn);
-          });
+          allItems = data;
+          shuffledItems = shuffle(allItems);
+          render();
 
           // Arrived on a shared link: open that item immediately. No pushState —
           // there's no page-of-ours behind us to go back to, so closing strips
@@ -473,6 +815,8 @@
           if (deepLink !== undefined) {
             current = deepLink;
             showCurrent();
+            // So closing the shared link drops you on that photo's page.
+            showPageFor(current);
             lightbox.showModal();
           }
         })

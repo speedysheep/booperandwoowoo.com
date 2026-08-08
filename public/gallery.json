@@ -2513,6 +2513,15 @@
   },
   {
     "type": "video",
+    "poster": "thumbs/booperIsBeautiful.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/6fe7b6c4d2da4ecaebe185cd73c343665c1f193b.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/6fe7b6c4d2da4ecaebe185cd73c343665c1f193b.mp4",
+    "width": 576,
+    "height": 1024,
+    "duration": 3.9
+  },
+  {
+    "type": "video",
     "poster": "thumbs/lackOfNuggets.jpg",
     "preview": "https://media.booperandwoowoo.com/previews/acbc212b9a0602ab8b5d52bcf9c14318bdb420de.mp4",
     "full": "https://media.booperandwoowoo.com/videos/acbc212b9a0602ab8b5d52bcf9c14318bdb420de.mp4",
@@ -2522,11 +2531,56 @@
   },
   {
     "type": "video",
+    "poster": "thumbs/multipuppymagic.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/12663db85ccd4b7d7c97c3ab5cc5b9347c980ad3.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/12663db85ccd4b7d7c97c3ab5cc5b9347c980ad3.mp4",
+    "width": 720,
+    "height": 960,
+    "duration": 7.3
+  },
+  {
+    "type": "video",
+    "poster": "thumbs/nibbleyNobbles.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/ae77707957be9dad0b7f83c1fd8101d3dbdbd748.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/ae77707957be9dad0b7f83c1fd8101d3dbdbd748.mp4",
+    "width": 576,
+    "height": 768,
+    "duration": 19
+  },
+  {
+    "type": "video",
     "poster": "thumbs/nuggets.jpg",
     "preview": "https://media.booperandwoowoo.com/previews/1bef79333e73fa2ce2d6c6caba71e55e5326cbfb.mp4",
     "full": "https://media.booperandwoowoo.com/videos/1bef79333e73fa2ce2d6c6caba71e55e5326cbfb.mp4",
     "width": 478,
     "height": 850,
     "duration": 31.477911
+  },
+  {
+    "type": "video",
+    "poster": "thumbs/verywiggleywoowoo.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/48d21bda7241465b9c76a057dd0079aef0c478c2.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/48d21bda7241465b9c76a057dd0079aef0c478c2.mp4",
+    "width": 576,
+    "height": 1024,
+    "duration": 15.117
+  },
+  {
+    "type": "video",
+    "poster": "thumbs/woowoowiggles.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/0e11d82d0c5c35ae7bd7ecf4ed317e6d10890337.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/0e11d82d0c5c35ae7bd7ecf4ed317e6d10890337.mp4",
+    "width": 768,
+    "height": 576,
+    "duration": 10.843
+  },
+  {
+    "type": "video",
+    "poster": "thumbs/yummy.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/5d6039f107f1fcd374306181dcfa603b019653f9.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/5d6039f107f1fcd374306181dcfa603b019653f9.mp4",
+    "width": 576,
+    "height": 1024,
+    "duration": 15.75
   }
 ]
