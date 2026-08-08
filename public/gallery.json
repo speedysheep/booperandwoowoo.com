@@ -1904,6 +1904,20 @@
     "height": 1920
   },
   {
+    "type": "photo",
+    "full": "pictures/sweetladybooper.jpeg",
+    "thumb": "thumbs/sweetladybooper.jpg",
+    "width": 896,
+    "height": 1195
+  },
+  {
+    "type": "photo",
+    "full": "pictures/woowooinasuit.jpeg",
+    "thumb": "thumbs/woowooinasuit.jpg",
+    "width": 768,
+    "height": 1364
+  },
+  {
     "type": "video",
     "poster": "thumbs/0ea4d665f1902498293ca2083720825b.jpg",
     "preview": "https://media.booperandwoowoo.com/previews/e57082ff4b761fd31ae01f2f181bf8cf7009ec3a.mp4",
@@ -2496,5 +2510,23 @@
     "width": 576,
     "height": 768,
     "duration": 7.315
+  },
+  {
+    "type": "video",
+    "poster": "thumbs/lackOfNuggets.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/acbc212b9a0602ab8b5d52bcf9c14318bdb420de.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/acbc212b9a0602ab8b5d52bcf9c14318bdb420de.mp4",
+    "width": 478,
+    "height": 850,
+    "duration": 42.603144
+  },
+  {
+    "type": "video",
+    "poster": "thumbs/nuggets.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/1bef79333e73fa2ce2d6c6caba71e55e5326cbfb.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/1bef79333e73fa2ce2d6c6caba71e55e5326cbfb.mp4",
+    "width": 478,
+    "height": 850,
+    "duration": 31.477911
   }
 ]
