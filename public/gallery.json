@@ -2558,6 +2558,15 @@
   },
   {
     "type": "video",
+    "poster": "thumbs/WhatsApp Video 2026-08-08 at 21.10.21.jpg",
+    "preview": "https://media.booperandwoowoo.com/previews/a6a95f0ae93e86b9a408fc3b4ad1be4b78397df0.mp4",
+    "full": "https://media.booperandwoowoo.com/videos/a6a95f0ae93e86b9a408fc3b4ad1be4b78397df0.mp4",
+    "width": 848,
+    "height": 478,
+    "duration": 8.152822
+  },
+  {
+    "type": "video",
     "poster": "thumbs/b7f4fc86d42dd41df0c360e67b8ffc00.jpg",
     "preview": "https://media.booperandwoowoo.com/previews/8a65b389f37e91bd8445eeedcd728ecc50344816.mp4",
     "full": "https://media.booperandwoowoo.com/videos/8a65b389f37e91bd8445eeedcd728ecc50344816.mp4",
